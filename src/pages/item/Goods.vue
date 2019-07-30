@@ -45,7 +45,7 @@
           <v-btn icon @click="editGoods(props.item)">
             <i class="el-icon-edit"/>
           </v-btn>
-          <v-btn icon>
+          <v-btn icon @click="deleteGoods(props.item.id)">
             <i class="el-icon-delete"/>
           </v-btn>
           <v-btn icon v-if="props.item.saleable">下架</v-btn>
@@ -164,6 +164,22 @@
         this.show = true;
         // 获取要编辑的goods
         this.oldGoods = oldGoods;
+      },
+      deleteGoods(id) {
+        this.$message.confirm('此操作将永久删除该商品, 是否继续?')
+          .then(() => {
+            // 发起删除请求
+            this.$http.delete("/item/goods?id=" + id)
+              .then(() => {
+                // 删除成功，重新加载数据
+                this.getDataFromServer();
+                this.$message.success("删除成功！");
+              })
+          })
+          .catch(() => {
+            this.$message.info('已取消删除');
+          });
+
       },
       closeWindow() {
         console.log(1)
