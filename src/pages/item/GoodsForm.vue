@@ -234,7 +234,7 @@
           }
         }
       },
-      submit() {
+      submit: function () {
         // goods中的商品分类id
         if (!this.goods.categories || this.goods.categories.length < 3) {
           this.$message.error("商品分类填写不正确！")
@@ -251,15 +251,14 @@
         // 转为字符串保存
         const obj = {};
         this.skuTemplate.forEach(t => {
-          if(t.options.length > 0){
+          if (t.options.length > 0) {
             obj[t.k] = t.options;
           }
         })
         this.goods.spuDetail.specTemplate = JSON.stringify(obj);
 
         // 对全局规格参数进行深拷贝
-        const specs = [];
-        Object.deepCopy(this.specifications, specs);
+        const specs = Object.deepCopy(this.specifications);
         specs.forEach(({params}) => {
           params.forEach(p => {
             if (!p.global) {
@@ -281,7 +280,7 @@
             enable,
             title,
             images: images && images.length > 0 ? images.join(",") : "",
-            price : this.$format(price),
+            price: this.$format(price),
             ownSpec: JSON.stringify(skuSpecs),
             indexes,
             stock: {stock}
@@ -294,8 +293,8 @@
           data: this.goods
         })
           .then(() => {
+            this.$emit("closeForm");
             this.$message.success("提交商品成功！");
-            this.$emit("close")
           })
           .catch((e) => {
             console.log(e)
@@ -311,7 +310,7 @@
             return;
           }
           // 实现数据回显
-          Object.deepCopy(val, this.goods)
+          this.goods = Object.deepCopy(val);
         }
       },
       'goods.categories': {
