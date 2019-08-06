@@ -113,6 +113,12 @@
           this.totalBrands = resp.data.total;
           // 完成赋值后，把加载状态赋值为false
           this.loading = false;
+        }).catch(error => {
+          if (error.response.status == 404) {
+            this.brands = [];
+            this.totalBrands = 0;
+            this.loading = true;
+          }
         })
       },
       addBrand() {
@@ -132,23 +138,46 @@
             // 控制弹窗可见：
             this.show = true;
             // 获取要编辑的brand
-            this.oldBrand = oldBrand
+            this.oldBrand = oldBrand;
             // 回显商品分类
             this.oldBrand.categories = data;
           })
       },
-      deleteBrand(item) {
-        this.$message.confirm('此操作将永久删除该品牌, 是否继续?').then(() => {
-          // 发起删除请求
-          this.$http.delete("/item/brand?id=" + item.id,)
-            .then(() => {
-              // 删除成功，重新加载数据
-              this.$message.success("删除成功！");
-              this.getDataFromApi();
-            })
-        }).catch(() => {
+      deleteBrand(oldBrand) {
+
+        // if (this.selected.length === 1 && this.selected[0].id === oldBrand.id) {
+        this.$message.confirm('此操作将永久删除该品牌, 是否继续?').then(
+          () => {
+            // 发起删除请求，删除单条数据
+            this.$http.delete("/item/brand/bid/" + oldBrand.id).then(() => {
+              this.$message.success("删除成功!！");
+              this.getDataFromServer();
+            }).catch()
+          }
+        ).catch(() => {
           this.$message.info("删除已取消！");
         });
+        // }
+      },
+      deleteAllBrand() {
+        //拼接id数组
+        /**
+         * 加了{}就必须有return
+         * @type {any[]}
+         *
+         * */
+        const ids = this.selected.map(s => s.id);
+        if (selected.length > 0) {
+          this.$message.confirm('此操作将永久删除所选品牌，是否继续?').then(
+            () => {
+              this.$http.delete("/item/brand/bid/" + ids.join("-")).then(() => {
+                this.getDataFromServer();
+              }).catch();
+            }
+          ).catch(() => {
+            this.$message.info("删除已取消！");
+          });
+        }
       },
       closeWindow(){
         // 重新加载数据

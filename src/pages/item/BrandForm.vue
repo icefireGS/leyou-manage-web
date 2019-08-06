@@ -14,7 +14,11 @@
       </v-flex>
       <v-flex>
         <v-upload
-          v-model="brand.image" url="/upload/image" :multiple="false" :pic-width="250" :pic-height="90"
+          v-model="brand.image"
+          url="/upload/image"
+          :multiple="false"
+          :pic-width="250"
+          :pic-height="90"
         />
       </v-flex>
     </v-layout>
@@ -49,7 +53,7 @@
         },
         nameRules: [
           v => !!v || "品牌名称不能为空",
-          v => v.length > 1 || "品牌名称至少2位"
+          v => v ? v.length > 1 || "品牌名称至少2位":"品牌名称至少2位"
         ],
         letterRules: [
           v => !!v || "首字母不能为空",
